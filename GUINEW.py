@@ -1,8 +1,3 @@
-'''
-Created on 23.02.2017
-
-@author: Broke
-'''
 import wx
 from GAME import Game
 
@@ -49,20 +44,48 @@ class Frame(wx.Frame):
     def __init__(self):
         super(Frame, self).__init__(None)
         self.SetTitle('2048')
-        self.view = Canvas(self)
-        self.game = Game(self, 4,4)
+        self.bgc = wx.GREEN
+        self.w, self.h = 4,4
+        self.labels, self.panels = self.doElements()
+        self.game = Game(self, self.w, self.h)
         
         self.doBindings()
         self.doLayout()
         self.CenterOnScreen()
+        
+    def doElements(self):
+        labels = []
+        panels = []
+        for i in range(self.w*self.h):
+            p = wx.Panel(self)
+            p.SetBackgroundColour(self.bgc)
+            panels.append(p)
+            t = wx.StaticText(p, label="0", style=wx.ALIGN_CENTER)
+            t.SetBackgroundColour(wx.RED)
+            labels.append(t)
+        return labels, panels
 
     def doBindings(self):
-        self.view.Bind(wx.EVT_KEY_DOWN, self.game.handleInput)
+        self.Bind(wx.EVT_KEY_DOWN, self.game.handleInput)
+        for i in range(self.w*self.h):
+            self.panels[i].Bind(wx.EVT_KEY_DOWN, self.game.handleInput)
+            self.labels[i].Bind(wx.EVT_KEY_DOWN, self.game.handleInput)
 
     def doLayout(self):
+        vboxGf = wx.BoxSizer(wx.VERTICAL)
+        panel = wx.Panel(self)
+        for n in range(self.h):
+            hbox = wx.StaticBoxSizer(wx.VERTICAL, panel)
+            for i in range(n*self.h, n*self.h+self.w):
+                #pbox = wx.BoxSizer(wx.HORIZONTAL)
+                #pbox.Add(self.labels[i], 1, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL)
+                #self.panels[i].SetSizer(pbox)
+                hbox.Add(self.labels[i], 1, wx.ALIGN_CENTER)
+            vboxGf.Add(hbox, 1, wx.EXPAND)
         hbox = wx.BoxSizer(wx.HORIZONTAL)
-        hbox.Add(self.view, 1, wx.EXPAND)
+        hbox.Add(vboxGf, 1, wx.EXPAND)
         self.SetSizer(hbox)
+        self.Layout()
 
     def view_on_key(self, event):
         if (event.GetKeyCode() == wx.WXK_UP):
@@ -73,8 +96,12 @@ class Frame(wx.Frame):
         self.refresh()
 
     def refresh(self, gamefield):
-        self.view.gamefield = gamefield
-        self.view.Refresh()
+        for x in range(self.w):
+            for y in range(self.h):
+                if gamefield[x][y] == 0:
+                    self.labels[x*self.w+y].SetLabel("halp")
+                else:
+                    self.labels[x*self.w+y].SetLabel(str(2**gamefield[x][y]))
 
     def on_start(self, event):
         pass
