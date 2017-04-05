@@ -52,7 +52,6 @@ class Game():
             if self.failures > 10:
                 self.running = False
             self.lastGameUpdate = time.clock()
-            print(self.score)
         
     def moveGamefield(self, direction):
         moved = False
@@ -202,21 +201,23 @@ class Game():
         return result
         
         
-    def handleInput(self, event):
-        key = event.GetKeyCode()
+    def handleInputEvent(self, event):
+        self.handleInput(event.GetKeyCode())
+        event.Skip()
+        
+    def handleInput(self, c):
         if self.running:
-            if key == ord('W'):
+            if c == ord('W'):
                 self.move(Dir.NORTH)
-            elif key == ord('A'):
+            elif c == ord('A'):
                 self.move(Dir.WEST)
-            elif key == ord('S'):
+            elif c == ord('S'):
                 self.move(Dir.SOUTH)
-            elif key == ord('D'):
+            elif c == ord('D'):
                 self.move(Dir.EAST)
             self.update()
-        if key == ord('R'):
+        if c == ord('R'):
             self.restart()
-        if key == ord('G'):
+        if c == ord('G'):
             print(self.runGame(self.easy))
             self.update()
-        event.Skip()
