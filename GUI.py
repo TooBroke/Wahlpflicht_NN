@@ -121,7 +121,10 @@ class Frame(wx.Frame):
         self.view.gamefield = gamefield
         self.view.Refresh()
         if(self.game):
-            self.scoreLabel.SetLabel("Score:\t"+self.getScoreAsString(self.game.getScore()))
+            a = "Score:\t"+self.getScoreAsString(self.game.getScore())
+            a += "\nFailures: "+str(self.game.failures)
+            a += "\nRunning: "+str(self.game.running)
+            self.scoreLabel.SetLabel(a)
 
     def getScoreAsString(self, score):
         r = str(score)

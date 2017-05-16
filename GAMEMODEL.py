@@ -62,43 +62,60 @@ class Gamefield:
     def getValue(self, x, y):
         return self.get(x,y).value
     
-    def getListOfDirection(self, direction):
-        segList = []
+    def getComplementListOfDirection(self, direction):
         if direction == Dir.SOUTH:
-            current = self.upperLeft.getSouthern(self.height)
-            while current != None:
-                segList.append(current)
-                current = current.east
+            return self.upperLeft.getSouthern(self.height).getListOfDir(Dir.EAST)
         elif direction == Dir.NORTH:
-            current = self.upperLeft
-            while current != None:
-                segList.append(current)
-                current = current.east
+            return self.upperLeft.getListOfDir(Dir.EAST)
         elif direction == Dir.WEST:
-            current = self.upperLeft
-            while current != None:
-                segList.append(current)
-                current = current.south
+            return self.upperLeft.getListOfDir(Dir.SOUTH)
         else:
-            current = self.upperLeft.getEastern(self.width)
-            while current != None:
-                segList.append(current)
-                current = current.south
-        return segList
+            return self.upperLeft.getEastern(self.height).getListOfDir(Dir.SOUTH)
+        
+    def getComplementDirection(self, direction):
+        if direction == Dir.SOUTH:
+            return Dir.NORTH
+        elif direction == Dir.NORTH:
+            return Dir.SOUTH
+        elif direction == Dir.WEST:
+            return Dir.EAST
+        else:
+            return Dir.WEST
         
     def moveInDir(self, direction):
-        segList = self.getListOfDirection(direction)
-        for segment in segList:
-            current = segment
-            next = segment.getInDir(direction)
-            while next != None:
-                if current.value != 0 and next.value != 0:
-                    if current.value == next.value:
+        moved = False
+        score = 0
+        segList = self.getComplementListOfDirection(direction)
+        comDir = self.getComplementDirection(direction)
+        for seg in segList:
+            current = seg
+            #Add sums together
+            while current != None:
+                tempSeg = current.getInDir(comDir)
+                while tempSeg != None and tempSeg.value == 0:
+                    tempSeg = tempSeg.getInDir(comDir)
+                if tempSeg != None:
+                    if tempSeg.value == current.value:
                         current.value += 1
-                        next.value = 0
-                self.moveToDir(current, direction)
-                current = next
-                next = next.getInDir(direction)
+                        tempSeg.value = 0
+                        score += 2**current.value
+                        moved = True
+                current = current.getInDir(comDir)
+            #Move Segments
+            current = seg
+            while current != None:
+                tempSeg = current
+                while tempSeg != None and tempSeg.value == 0:
+                    tempSeg = tempSeg.getInDir(comDir)
+                if tempSeg != None:
+                    if tempSeg != current:
+                        moved = True
+                    a = tempSeg.value
+                    tempSeg.value = 0
+                    current.value = a
+                current = current.getInDir(comDir)
+        return moved, score
+
                 
     def moveToDir(self, segment, direction):
         current = segment

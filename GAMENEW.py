@@ -20,6 +20,9 @@ class Game():
 
     def initGame(self):
         self.gamefield = Gamefield(self.w, self.h)
+#         self.gamefield.upperLeft.value = 1
+#         self.gamefield.upperLeft.getSouthern(self.h).value = 1
+#         self.running = True
         
     def startGame(self):
         self.running = True
@@ -35,7 +38,9 @@ class Game():
     
     def move(self, direction):
         if self.lastGameUpdate*1000+self.GameDelay < time.clock()*1000:
-            if self.moveGamefield(direction):
+            moved, addScore = self.gamefield.moveInDir(direction)
+            self.score += addScore
+            if moved:
                 self.spawnNewElement()
                 self.failures = 0
                 self.update()
