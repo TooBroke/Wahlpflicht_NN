@@ -49,7 +49,7 @@ class Gamefield:
     def getListOfAllSegments(self):
         result = []
         current = self.upperLeft
-        while current.getInDir(Dir.EAST) != None:
+        while current != None:
             extendList = current.getListOfDir(Dir.SOUTH)
             if extendList != None:
                 result.extend(extendList)
@@ -125,8 +125,28 @@ class Gamefield:
             current.value = 0
             current = next
             next = next.getInDir(direction)
-        
-
+            
+    def getAs2DArray(self):
+        segList = self.upperLeft.getListOfDir(Dir.SOUTH)
+        result = []
+        for line in range(self.height):
+            result.append([])
+            current = segList[line]
+            for seg in current.getListOfDir(Dir.EAST):
+                result[line].append(seg.value)
+        return result
+    
+    def getAs1DArray(self):
+        segList = self.upperLeft.getListOfDir(Dir.SOUTH)
+        result = []
+        for line in range(self.height):
+            current = segList[line]
+            for seg in current.getListOfDir(Dir.EAST):
+                result.append(seg.value)
+        return result
+    
+    
+    
 class Segment:
     
     def __init__(self):
