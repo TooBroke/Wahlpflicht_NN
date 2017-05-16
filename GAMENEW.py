@@ -30,7 +30,8 @@ class Game():
         self.spawnNewElement()
 
     def update(self, force = False):
-        self.gui.refresh(self.gamefield)
+        if self.gui is not None:
+            self.gui.refresh(self.gamefield)
         self.lastGUIUpdate = time.clock()
 
     def getMap(self):
