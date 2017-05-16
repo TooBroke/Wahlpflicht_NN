@@ -4,7 +4,7 @@ Created on 23.02.2017
 @author: Broke
 '''
 import wx
-from GAME import Game
+from GAMENEW import Game
 
 class Canvas(wx.Panel):
     def __init__(self, parent):
@@ -20,9 +20,9 @@ class Canvas(wx.Panel):
     def on_paint(self, event):
         dc = wx.AutoBufferedPaintDC(self)
         dc.Clear()
-        if len(self.gamefield) > 0:
+        if self.gamefield.width > 0:
             sw, sh = self.GetSize()
-            gfw, gfh = len(self.gamefield[0]), len(self.gamefield)
+            gfw, gfh = self.gamefield.width,self.gamefield.height
             divisor = sw if sw<sh else sh
             w, h = divisor//gfw, divisor//gfh
             cx = abs(sw-sh)/2 if sw>sh else 0
@@ -30,7 +30,7 @@ class Canvas(wx.Panel):
             border = 5
             for x in range(gfw):
                 for y in range(gfh):
-                    val = 2**self.gamefield[x][y]
+                    val = 2**self.gamefield.getValue(x,y)
                     if val == 1:
                         dc.SetPen(wx.Pen((100,100,100), border))
                     else:
