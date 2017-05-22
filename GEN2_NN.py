@@ -28,7 +28,7 @@ def play():
 def buildPopulation():
     population= []
     
-    for i in range(100):
+    for i in range(populationSize):
         paramSet=[]
         for j in range(len(net.params)):
             paramSet.append(random.uniform(-10,10))
@@ -46,8 +46,8 @@ def selection(population):
             sc = game.runGame(play)
             scores.append(sc)
         averageScores.append(sum(scores)/len(scores))
-    print sorted(averageScores, reverse = True)
-    for i in range(20):
+    print averageScores
+    for i in range(selectedIndividualSize):
         selectedIndividuals.append(population[averageScores.index(max(averageScores))])
         averageScores.pop(averageScores.index(max(averageScores)))
     return selectedIndividuals
@@ -56,16 +56,16 @@ def crossover(selectedIndividuals):
     newPopulation = []
     for entry in selectedIndividuals:
         newPopulation.append(entry)
-    for i in range(80):
-        parent1 = selectedIndividuals[random.randint(0,19)]
-        parent2 = selectedIndividuals[random.randint(0,19)]
+    for i in range(populationSize-selectedIndividualSize):
+        parent1 = selectedIndividuals[random.randint(0,len(selectedIndividuals)-1)]
+        parent2 = selectedIndividuals[random.randint(0,len(selectedIndividuals)-1)]
         child = parent1[len(parent1)/2:]+parent2[:len(parent2)/2]
         newPopulation.append(child)
     return newPopulation
 
 
 def mutate(population):
-    mutationLoc= random.randint(0,99)
+    mutationLoc= random.randint(0,len(population)-1)
     mutatingIndividual=population[mutationLoc]
     for i in range(len(mutatingIndividual)):
         mutatingIndividual.insert(i, random.uniform(-10,10))
@@ -94,7 +94,6 @@ def doGenetic(population):
             scores.append(sc)
         finalAverages.append(sum(scores)/len(scores))
     
-    print finalSelection
     fittestIndividual = finalSelection[finalAverages.index(max(finalAverages))]
     return fittestIndividual
 
@@ -112,13 +111,16 @@ net.addConnection(hidden_to_out)
 net.sortModules()
 
 '''Lernvariablen'''
-
-gamesPerIndividual = 30 #Anzahl Spiele per Individuum um Fitness zu bestimmen (10-50 max.)
-generationCount = 500 #Anzahl an Generationen
+populationSize = 50 #Anzahl der Individuuen
+selectedIndividualSize = populationSize/5 #Anzahl an indiviuen, die an die naechste Generation weitergegeben wird
+gamesPerIndividual = 50 #Anzahl Spiele per Individuum um Fitness zu bestimmen (10-50 max.)
+generationCount = 100 #Anzahl an Generationen
 mutationChance = 0.2 #Chance des Mutierens eines Individuums
 
 game = Game(None,4,4)
 population = buildPopulation()
 ultimateParams = doGenetic(population)
+
+print ultimateParams
 
 
