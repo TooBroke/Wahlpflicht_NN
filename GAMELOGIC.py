@@ -1,31 +1,21 @@
 from __future__ import print_function
 from random import randint
-from time import sleep
-import time
-from GAMEMODEL import *
+from GAMEMODEL import Dir, Gamefield
 
 
 class Game():
-    def __init__(self, gui, w,  h):
+    def __init__(self, gui, s):
         self.gui = gui
-        self.w, self.h = w, h
+        self.size = s
         self.score = 0
         self.running = False
-        self.useFastMode = False
-        self.GUIDelay  = 0
-        self.GameDelay = 0
         self.failures = 0
-        self.lastGUIUpdate = time.clock()
-        self.lastGameUpdate = time.clock()
         self.initGame()
         self.startGame()
         self.update()
 
     def initGame(self):
-        self.gamefield = Gamefield(self.w, self.h)
-#         self.gamefield.upperLeft.value = 1
-#         self.gamefield.upperLeft.getSouthern(self.h).value = 1
-#         self.running = True
+        self.gamefield = Gamefield(self.size, self.size)
         
     def startGame(self):
         self.spawnNewElement()
@@ -40,29 +30,27 @@ class Game():
         return self.gamefield
     
     def move(self, direction):
-        if self.lastGameUpdate*1000+self.GameDelay < time.clock()*1000:
-            moved, addScore = self.gamefield.moveInDir(direction)
-            self.score += addScore
-            if moved:
-                self.spawnNewElement()
-                self.failures = 0
-                self.update()
-            else:
-                self.failures += 1
-            if self.failures > 10:
-                self.running = False
-            self.lastGameUpdate = time.clock()
-            self.update()
+        moved, addScore = self.gamefield.moveInDir(direction)
+        self.score += addScore
+        if moved:
+            self.spawnNewElement()
+            self.failures = 0
+        else:
+            self.failures += 1
+        if self.failures >= 10:
+            self.running = False
+        self.update()
         
     def spawnNewElement(self):
-        val = 1
         if randint(0,100) > 90:
-            val = 2
+            value = 2
+        else:
+            value = 1
         if self.gamefield.hasFreeSpace():
-            x,y = randint(0,self.w-1), randint(0,self.h-1)
+            x,y = randint(0,self.size-1), randint(0,self.size-1)
             while(self.gamefield.get(x, y).value != 0):
-                x,y = randint(0,self.w-1), randint(0,self.h-1)
-            self.gamefield.get(x, y).value = val;
+                x,y = randint(0,self.size-1), randint(0,self.size-1)
+            self.gamefield.get(x, y).value = value;
         else:
             self.running = False
             
@@ -70,7 +58,7 @@ class Game():
         self.score = 0
         self.initGame()
         self.startGame()
-        self.update(forced=True)
+        self.update()
         
     def getMaxNumber(self):
         return 2**max(self.gamefield.getAs1DArray())
@@ -87,9 +75,10 @@ class Game():
             self.move(func())
             
         return self.score
-    def easy(self):
+    
+    def simpleAI(self, gamefield):
         south = 0
-        for i in self.gamefield.upperLeft.getListOfDir(Dir.EAST):
+        for i in gamefield.upperLeft.getListOfDir(Dir.EAST):
             last = 0
             current = i
             while current != None:
@@ -100,7 +89,7 @@ class Game():
                     last = current.value
                 current = current.getInDir(Dir.SOUTH)
         north = 0
-        for i in self.gamefield.upperLeft.getSouthern(self.h).getListOfDir(Dir.EAST):
+        for i in gamefield.upperLeft.getSouthern(self.size).getListOfDir(Dir.EAST):
             last = 0
             current = i
             while current != None:
@@ -111,7 +100,7 @@ class Game():
                     last = current.value
                 current = current.getInDir(Dir.NORTH)
         east = 0
-        for i in self.gamefield.upperLeft.getListOfDir(Dir.SOUTH):
+        for i in gamefield.upperLeft.getListOfDir(Dir.SOUTH):
             last = 0
             current = i
             while current != None:
@@ -122,7 +111,7 @@ class Game():
                     last = current.value
                 current = current.getInDir(Dir.EAST)
         west = 0
-        for i in self.gamefield.upperLeft.getEastern(self.h).getListOfDir(Dir.SOUTH):
+        for i in gamefield.upperLeft.getEastern(self.size).getListOfDir(Dir.SOUTH):
             last = 0
             current = i
             while current != None:
@@ -148,7 +137,10 @@ class Game():
                 a=[Dir.EAST,Dir.WEST,Dir.SOUTH,Dir.NORTH]
                 return a[randint(0,3)]
     
-    def test(self):
+    def randomAI(self, gamefield):
         a=[Dir.EAST,Dir.WEST,Dir.SOUTH,Dir.NORTH]
         return a[randint(0,3)]
+    
+    def testAI(self, gamefield):
+        return Dir.SOUTH
         

@@ -1,9 +1,3 @@
-'''
-Created on 06.04.2017
-
-@author: Broke
-'''
-
 class Dir():
     NORTH = 0
     EAST = 1

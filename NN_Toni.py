@@ -1,6 +1,6 @@
 import random
 import time
-from GAMENEW import Game,Dir
+from GAMELOGIC import Game,Dir
 import numpy as np
 from pybrain.structure import FeedForwardNetwork
 from pybrain.structure.modules.linearlayer import LinearLayer

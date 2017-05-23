@@ -8,7 +8,8 @@ import numpy as np
 from pybrain.structure.networks import FeedForwardNetwork
 from pybrain.structure.modules import LinearLayer, SigmoidLayer
 from pybrain.structure.connections import FullConnection
-from GAMENEW import Dir, Game
+from GAMELOGIC import Game
+from GAMEMODEL import Dir
 
 # constants
 POPULATION_SIZE = 50
@@ -148,7 +149,7 @@ net.addConnection(hid2_to_out)
 net.sortModules()
 
 # set up game
-game = Game(None, 4, 4)
+game = Game(None, 4)
 generation_number = 1
 amount_of_generations = 0
 population = []

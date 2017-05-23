@@ -4,3 +4,4 @@
 *.pyc
 GUINEW.py
 .gitignore
+old/
