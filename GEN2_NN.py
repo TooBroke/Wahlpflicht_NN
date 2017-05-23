@@ -7,7 +7,6 @@ from pybrain.structure.modules.linearlayer import LinearLayer
 from pybrain.structure.modules.sigmoidlayer import SigmoidLayer
 from pybrain.structure.connections.full import FullConnection
 from numpy import average
-from _ast import Param
 
 def rectify(value):
     return (0, 1)[value <= 0.5]
@@ -40,7 +39,6 @@ def selection(population):
     
     averageScores=[]
     selectedIndividuals = []
-    bestAverages=[]
     for i in range(len(population)):
         scores = [] 
         net._setParameters(population[i])
@@ -48,11 +46,10 @@ def selection(population):
             sc = game.runGame(play)
             scores.append(sc)
         averageScores.append(sum(scores)/len(scores))
+    print sum(averageScores)/len(averageScores)
     for i in range(selectedIndividualSize):
         selectedIndividuals.append(population[averageScores.index(max(averageScores))])
-        bestAverages.append(max(averageScores))
         averageScores.pop(averageScores.index(max(averageScores)))
-    print sum(bestAverages)/len(bestAverages)
     return selectedIndividuals
     
 def crossover(selectedIndividuals): 
@@ -61,8 +58,10 @@ def crossover(selectedIndividuals):
     for i in range(populationSize-selectedIndividualSize):
         parent1 = selectedIndividuals[random.randint(0,len(selectedIndividuals)-1)]
         parent2 = selectedIndividuals[random.randint(0,len(selectedIndividuals)-1)]
-        child = parent1[len(parent1)/2:]+parent2[:len(parent2)/2]
+        splitPoint = random.randint(0, len(parent1))
+        child = parent1[splitPoint:]+parent2[:splitPoint]
         newPopulation.append(child)
+        
     if np.random.random() < mutationChance:
         newPopulation = mutate(newPopulation)
     for entry in selectedIndividuals:
@@ -115,12 +114,13 @@ net.addConnection(in_to_hidden)
 net.addConnection(hidden_to_out)
 net.sortModules()
 
+
 '''Lernvariablen'''
 populationSize = 100 #Anzahl der Individuuen
 selectedIndividualSize = populationSize/5 #Anzahl an indiviuen, die an die naechste Generation weitergegeben wird
-gamesPerIndividual = 20 #Anzahl Spiele per Individuum um Fitness zu bestimmen (10-50 max.)
-generationCount = 100 #Anzahl an Generationen
-mutationChance = 0.05 #Chance des Mutierens eines Individuums
+gamesPerIndividual = 30 #Anzahl Spiele per Individuum um Fitness zu bestimmen (10-50 max.)
+generationCount = 500 #Anzahl an Generationen
+mutationChance = 0.2 #Chance des Mutierens eines Individuums
 
 game = Game(None,4,4)
 population = buildPopulation()
