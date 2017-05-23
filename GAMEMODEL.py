@@ -5,9 +5,9 @@ Created on 06.04.2017
 '''
 
 class Dir():
-    NORTH = 0,
-    EAST = 1,
-    SOUTH = 2,
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
     WEST = 3
 
 class Gamefield:

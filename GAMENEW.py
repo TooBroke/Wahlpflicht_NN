@@ -1,7 +1,9 @@
+from __future__ import print_function
 from random import randint
 from time import sleep
 import time
 from GAMEMODEL import *
+
 
 class Game():
     def __init__(self, gui, w,  h):
@@ -16,6 +18,7 @@ class Game():
         self.lastGUIUpdate = time.clock()
         self.lastGameUpdate = time.clock()
         self.initGame()
+        self.startGame()
         self.update()
 
     def initGame(self):
@@ -25,14 +28,13 @@ class Game():
 #         self.running = True
         
     def startGame(self):
+        self.spawnNewElement()
+        self.spawnNewElement()
         self.running = True
-        self.spawnNewElement()
-        self.spawnNewElement()
 
-    def update(self, force = False):
+    def update(self, forced = False):
         if self.gui is not None:
-            self.gui.refresh(self.gamefield)
-        self.lastGUIUpdate = time.clock()
+            self.gui.update(self.gamefield, forced)
 
     def getMap(self):
         return self.gamefield
@@ -50,64 +52,8 @@ class Game():
             if self.failures > 10:
                 self.running = False
             self.lastGameUpdate = time.clock()
+            self.update()
         
-    def moveGamefield(self, direction):
-        moved = False
-        xr, yr = [],[]
-        if direction == Dir.SOUTH:
-            xr = range(self.w)
-            yr = range(self.h-1,-1,-1)
-        if direction == Dir.EAST:
-            xr = range(self.w-1,-1,-1)
-            yr = range(self.h)
-        if direction in [Dir.NORTH, Dir.WEST]:
-            xr = range(self.w)
-            yr = range(self.h)
-        for x in xr:
-            for y in yr:
-                if self.gamefield.getValue(x,y) != 0:
-                    if self.moveElement(x,y,direction):
-                        moved = True
-        return moved
-                        
-    def moveElement(self, x, y, direction):
-        xdir,ydir = 0,0
-        if direction == Dir.NORTH:
-            ydir = -1
-        elif direction == Dir.SOUTH:
-            ydir = 1
-        elif direction == Dir.WEST:
-            xdir = -1
-        elif direction == Dir.EAST:
-            xdir = 1
-        xcur,ycur = x,y
-        running = True
-        while running:
-            if(-1 < xcur+xdir < self.w and -1 < ycur+ydir < self.h):
-                if self.gamefield.getValue(xcur+xdir,ycur+ydir) == 0:
-                    xcur += xdir
-                    ycur += ydir
-                elif self.gamefield.getValue(xcur+xdir,ycur+ydir) == self.gamefield.getValue(x, y):
-                    xcur += xdir
-                    ycur += ydir
-                    running = False                 
-                else:
-                    running = False
-            else:
-                running = False
-        if xcur == x and ycur == y:
-            return False
-        else:
-            cur = self.gamefield.getValue(xcur, ycur)
-            if cur == 0:
-                self.gamefield.get(xcur,ycur).value = self.gamefield.getValue(x,y)
-                self.gamefield.get(x,y).value = 0
-            elif cur == self.gamefield.getValue(x, y):
-                self.gamefield.get(xcur,ycur).value += 1
-                self.gamefield.get(x,y).value = 0
-                self.score += 2**self.gamefield.getValue(xcur,ycur)
-            return True
-    
     def spawnNewElement(self):
         val = 1
         if randint(0,100) > 90:
@@ -122,10 +68,12 @@ class Game():
             
     def restart(self):
         self.score = 0
-        self.running = True
         self.initGame()
         self.startGame()
-        self.update()
+        self.update(forced=True)
+        
+    def getMaxNumber(self):
+        return 2**max(self.gamefield.getAs1DArray())
         
     def getScore(self):
         return self.score
@@ -139,7 +87,6 @@ class Game():
             self.move(func())
             
         return self.score
-                
     def easy(self):
         south = 0
         for i in self.gamefield.upperLeft.getListOfDir(Dir.EAST):
@@ -203,26 +150,5 @@ class Game():
     
     def test(self):
         a=[Dir.EAST,Dir.WEST,Dir.SOUTH,Dir.NORTH]
-        print(randint(0,3))
         return a[randint(0,3)]
         
-    def handleInputEvent(self, event):
-        self.handleInput(event.GetKeyCode())
-        event.Skip()
-        
-    def handleInput(self, c):
-        if self.running:
-            if c == ord('W'):
-                self.move(Dir.NORTH)
-            elif c == ord('A'):
-                self.move(Dir.WEST)
-            elif c == ord('S'):
-                self.move(Dir.SOUTH)
-            elif c == ord('D'):
-                self.move(Dir.EAST)
-            self.update()
-        if c == ord('R'):
-            self.restart()
-        if c == ord('G'):
-            print(self.runGame(self.easy))
-            self.update()
