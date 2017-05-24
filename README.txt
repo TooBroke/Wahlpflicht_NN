@@ -1,3 +1,4 @@
+﻿Berufsschulprojekt für das Fach "Wahlpflicht" von Toni Serfling, Joshua Ward und Lasse Jacobs
 ##############################################################################################
 Inhalt
 ##############################################################################################
@@ -110,7 +111,7 @@ Daraufhin wird überprüft ob die neue Population ein Individuum enthält, welch
 Fitnesswert als das in der Pickle-Datei "best_individual.pkl" gespeicherte Individuum aufweist. 
 Ist dies der Fall wird das Individuum gespeichert.
 ----------------------------------------------------------------------------------------------
-4.2 Neue Popopulation generieren
+4.2 Neue Population generieren
 ----------------------------------------------------------------------------------------------
 Beim starten des Trainingsprogramms "NN_GENETIC.py" wird nach einer bereits vorhandenen 
 Population gesucht. Wenn keine Population vorhanden ist, also keine "population.pkl" Datei 
