@@ -64,10 +64,10 @@ class MenuPanel(wx.Panel):
         self.add(self.aiSpeedLabel)
         self.aiSpeedCtrl = IntCtrl(self, size=(self.width/2,-1))
         self.add(self.aiSpeedCtrl)
-        self.aiSelectLabel = wx.StaticText(self, label="AI", size=(self.width/2,-1))
+        self.aiSelectLabel = wx.StaticText(self, label="AI", size=(self.width/4,-1))
         self.add(self.aiSelectLabel)
-        self.aiSelectCB = wx.ComboBox(self, style=wx.CB_DROPDOWN | wx.CB_READONLY, choices=self.parent.aiList.keys(), size=(self.width/2,-1))
-        self.aiSelectCB.SetSelection(0)
+        self.aiSelectCB = wx.ComboBox(self, style=wx.CB_DROPDOWN | wx.CB_READONLY, choices=self.parent.aiList.keys(), size=(self.width/4*3,-1))
+        self.aiSelectCB.SetSelection(3)
         self.add(self.aiSelectCB)
         self.runCountLabel = wx.StaticText(self, label="Runs", size=(self.width/2,-1))
         self.add(self.runCountLabel)
@@ -75,8 +75,8 @@ class MenuPanel(wx.Panel):
         self.add(self.runCountCtrl)
         self.runAIButton = wx.Button(self, label="Run AI", size=(self.width,-1))
         self.add(self.runAIButton)
-        self.trainAIButton = wx.Button(self, label="Train AI", size=(self.width,-1))
-        self.add(self.trainAIButton)
+#         self.trainAIButton = wx.Button(self, label="Train AI", size=(self.width,-1))
+#         self.add(self.trainAIButton)
         self.stopAIButton = wx.Button(self, label="Stop AI", size=(self.width,-1))
         self.add(self.stopAIButton)
         self.restartButton = wx.Button(self, label="Restart", size=(self.width,-1))
@@ -105,7 +105,7 @@ class MenuPanel(wx.Panel):
                        (aiSelectSizer),
                        (runCountSizer),
                        (self.runAIButton),
-                       (self.trainAIButton),
+#                        (self.trainAIButton),
                        (self.stopAIButton),
                        (self.restartButton)])
         self.SetSizer(sizer)
@@ -164,10 +164,10 @@ class Frame(wx.Frame):
     fps = 10
     gameNumber = 0
     average = []
-    aiList = dict(random="self.game.randomAI", 
+    aiList = dict(randomAI="self.game.randomAI", 
                   simpleAI="self.game.simpleAI",
-                  josh="self.executeNN",
-                  test="self.game.testAI")
+                  geneticNN="self.executeNN",
+                  testAI="self.game.testAI")
 
     def __init__(self):
         super(Frame, self).__init__(None)

@@ -37,7 +37,7 @@ class Game():
             self.failures = 0
         else:
             self.failures += 1
-        if self.failures >= 10:
+        if self.failures >= 2:
             self.running = False
         self.update()
         

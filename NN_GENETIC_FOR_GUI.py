@@ -34,7 +34,7 @@ def createNetwork():
     return net
 
 def load_best_individual():
-    with open('best_individual.pkl', 'rb') as inp:
+    with open('best_individual_gui.pkl', 'rb') as inp:
         # load individual
         individual = pickle.load(inp)
     return individual
@@ -61,4 +61,3 @@ net._setParameters(load_best_individual())
 
 def moveNN(gamefield):
     return do_turn(net, gamefield.getAs1DArray())
-# print(game.runGame(net.activate))
