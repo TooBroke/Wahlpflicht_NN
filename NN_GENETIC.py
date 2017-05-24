@@ -19,6 +19,7 @@ FITNESS_ITERATIONS = 50
 MUTATE_INDIVIDUAL_CHANCE = 0.65
 MUTATE_WEIGHT_CHANCE = 0.3
 TEXT_SPACER = '-'*40
+SHOW_INDIVIDUALS=True
 
 # rectifies a value between 0 and 1
 def rectify(value):
@@ -229,6 +230,8 @@ for i in range(amount_of_generations):
     # print training information
     max_fitness = population[0][0]
     print '{:^11d} | {:^12d} | {:^10s}'.format(generation_number, max_fitness, time_spent)
-    print ''.join(str(i[0])+' ' for i in population)
+    # print each individual when training
+    if SHOW_INDIVIDUALS:
+        print ''.join(str(i[0])+' ' for i in population)
 print TEXT_SPACER
 print 'Training finished.'
